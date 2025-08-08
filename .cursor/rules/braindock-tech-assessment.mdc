@@ -1,0 +1,167 @@
+---
+alwaysApply: true
+---
+
+## 🧪 Technical Assessment: BrainDock: MCP Client–Server Architecture for Android with Remote LLM Access
+
+### 📌 Project Summary
+You aim to build an Android system that:
+
+- Hosts a local MCP-compliant server (on the Android device)
+- Receives requests from a client Android app (MCP client)
+- Maintains session context/state locally
+- Forwards input to a remote LLM API (e.g., OpenAI, Anthropic, Mistral, etc.)
+- Returns output + updated context to the Android client
+
+### 🧱 Architectural Overview
+```
+[Android App (Client)]
+  |
+  | HTTP (MCP protocol)
+  ▼
+[Local MCP Server (FastAPI on Android/Termux)]
+  |
+  | HTTPS/HTTP
+  ▼
+[Remote LLM API (e.g., GPT-4, Claude, etc.)]
+```
+
+### 🛠️ Components
+| Component | Technology Stack | Rationale |
+| --- | --- | --- |
+| Android MCP Client App | Flutter / Kotlin / React Native | Cross-platform UI with HTTP client, handles local request to server |
+| Local MCP Server | Python + FastAPI on Termux (Android) | Lightweight, embeddable, sessionful API that speaks MCP protocol |
+| Remote LLM API | OpenAI / Claude / Mistral API (JSON over HTTPS) | Pretrained LLM with inference capabilities |
+| Session/Context Manager | In-memory dict or SQLite (future) | Maintains per-session state for MCP |
+
+### ⚙️ Technical Requirements
+#### ✅ Functional Requirements
+- MCP-compliant request/response interface
+- Android app sends queries to local server
+- Local server tracks per-session state/context
+- Server forwards stateless LLM calls with session context reconstructed
+- LLM response and updated state returned to Android app
+
+#### ✅ Non-Functional Requirements
+- Low latency on Android devices
+- Offline operation (except for LLM calls)
+- Secure API key handling (remote API)
+- Resource-efficient background server on Android
+
+### 🔎 Key Technical Challenges & Solutions
+| Challenge | Risk Level | Solution |
+| --- | --- | --- |
+| Running Python/HTTP server on Android | Medium | Use Termux + uvicorn; minimal server footprint |
+| Persistent context tracking across sessions | Low | Store in-memory dict or serialize to local storage (e.g., JSON, SQLite) |
+| Secure API key handling | Medium | Store in Termux with restricted permissions; use .env or Android native keystore |
+| Communication between Android app and local server | Low | Use localhost or 127.0.0.1 (or 10.0.2.2 in emulator) |
+| MCP compliance with evolving spec | Low | Use custom adapter to wrap requests/responses in MCP-compatible schema |
+| LLM API rate limits / cost | Medium | Add rate limiting or request batching on server side |
+| Background process reliability on Android | Medium | Use Termux wake-lock or start via app hook (if rooted) |
+
+### 📊 Technology Stack Justification
+| Layer | Recommended Stack | Alternatives |
+| --- | --- | --- |
+| Local Server Runtime | Python + FastAPI (in Termux) | Node.js (heavier), Go (compiled) |
+| Inference Backend | OpenAI / Claude / Mistral / Ollama (remote) | Local ONNX (not needed) |
+| Context Store | Python dict / JSON file | SQLite or TinyDB |
+| Android App | Flutter (cross-platform) or Kotlin | React Native |
+
+### 📦 MCP Server API Contract
+**Endpoint:** `POST /mcp/infer`
+
+**Request:**
+```json
+{
+  "session_id": "user-123",
+  "mcp_input": {
+    "text": "Hello, who are you?"
+  },
+  "mcp_state": {
+    "history": [
+      {"role": "user", "content": "..."},
+      {"role": "assistant", "content": "..."}
+    ]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "session_id": "user-123",
+  "mcp_output": "I’m a helpful assistant.",
+  "mcp_state": {
+    "history": [ "... full updated history ..." ]
+  }
+}
+```
+
+### 🧪 Testing Strategy
+#### 🔍 Unit Tests
+- Request/response formatting
+- Context merging logic
+- LLM response parsing
+- Session state management
+
+#### 🧪 Integration Tests
+- Android client ⇄ Local server
+- Local server ⇄ Remote LLM API
+- Session continuity across requests
+
+#### 🧰 Manual Testing
+- Run Termux server on Linux for quick debugging
+- Use curl or httpie as mock client
+- Run Flutter app on emulator connected to localhost
+
+### 📈 Performance Considerations
+| Resource | Constraint | Strategy |
+| --- | --- | --- |
+| CPU (Android) | Light, must stay idle | Avoid heavy computation locally |
+| Memory | Must store session | Serialize context when idle |
+| Network | Needed for LLM | Add retry and backoff mechanisms |
+| Battery | Should be background-friendly | Run only on demand |
+
+### 🔐 Security Considerations
+- Do not store API keys in plaintext inside Android app.
+- MCP server must validate all input (even from localhost).
+- Implement per-session boundaries to prevent cross-user context leakage (if multi-user app).
+- Avoid exposing the local server externally (bind only to 127.0.0.1).
+
+### 🧭 Project Milestones (Phases)
+
+| Phase | Milestone | Deliverable |
+| --- | --- | --- |
+| 1 | Linux MCP server prototype | FastAPI + mock OpenAI forwarding |
+| 1.1 | FastAPI project skeleton | Basic FastAPI server running locally |
+| 1.2 | Implement MCP endpoint | `/mcp/infer` endpoint with mock response |
+| 1.3 | Integrate mock OpenAI call | Forward request to mock LLM, return response |
+| 1.4 | Unit tests for server logic | Tests for request/response, context handling |
+| 2 | Android app (MCP client) | App UI + HTTP calls to local server |
+| 2.1 | Android app project setup | Flutter/Kotlin app skeleton with UI scaffold |
+| 2.2 | HTTP client integration | App can send POST to local server |
+| 2.3 | UI for chat interaction | Basic chat interface, display responses |
+| 2.4 | Integration test: app ⇄ server | End-to-end test of local communication |
+| 3 | Termux MCP server on Android | Same server running natively on Android |
+| 3.1 | Termux environment setup | Documented steps to run server on Android |
+| 3.2 | Deploy FastAPI on Termux | Server runs and responds on Android device |
+| 3.3 | Android app connects to Termux server | App communicates with local server on device |
+| 3.4 | Performance and resource test | Measure latency, CPU, memory on device |
+| 4 | Session storage & context control | Persistent state handling |
+| 4.1 | In-memory session store | Per-session context in Python dict |
+| 4.2 | Persistent context (JSON/SQLite) | Serialize/restore session state |
+| 4.3 | Session management tests | Verify continuity and isolation of sessions |
+| 4.4 | Context control UI in app | App can view/reset session context |
+| 5 | Production deployment | API key management, monitoring, UI polish |
+| 5.1 | Secure API key management | Store API key securely in Termux |
+| 5.2 | Monitoring and logging | Add request/response logging, error handling |
+| 5.3 | UI/UX polish | Improve app interface and usability |
+| 5.4 | Production deployment checklist | Final docs, security review, release build |
+
+### ✅ Conclusion
+This is a highly feasible, lightweight, and modular architecture that:
+
+- Gives you full control over context and memory
+- Lets you swap out LLMs freely (OpenAI, Claude, etc.)
+- Requires no on-device inference, keeping performance and power use manageable
+- Is portable across Android, Linux, and emulator environments
