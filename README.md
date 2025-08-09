@@ -93,13 +93,16 @@ MISTRAL_API_KEY=...
 ```
 Only set the providers you intend to use.
 
-#### Install dependencies (Linux)
-Use your preferred Python tooling. Example with pip:
+#### Setup (venv + requirements) on Linux/Mac
+Create and activate a virtual environment, then install dependencies from `requirements.txt`:
 ```
-pip install fastapi uvicorn httpx python-dotenv pydantic
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-#### Run the local MCP server (example)
+#### Run the local MCP server
 Adjust the module path to your actual FastAPI app instance (e.g., `server.main:app`).
 ```
 uvicorn server.main:app --host 127.0.0.1 --port 8000
@@ -116,6 +119,12 @@ curl -s http://127.0.0.1:8000/mcp/infer \
       }'
 ```
 
+#### Run tests
+With the virtual environment activated:
+```
+pytest -q
+```
+
 ### Android App (MCP Client)
 - Use Flutter or Kotlin to build a simple chat UI.
 - Point HTTP requests to `http://127.0.0.1:8000/mcp/infer` on device.
@@ -125,8 +134,13 @@ curl -s http://127.0.0.1:8000/mcp/infer \
 1. Install Termux from a trusted source.
 2. Update packages: `pkg update && pkg upgrade`
 3. Install Python and git: `pkg install python git`
-4. Clone project and install deps: `pip install fastapi uvicorn httpx python-dotenv pydantic`
-5. Export API key(s) securely or use `.env` with restrictive permissions.
+4. Clone project and install deps: `pip install -r requirements.txt`
+5. Copy env template and set keys with restrictive permissions:
+   ```
+   cp .env.example .env
+   chmod 600 .env
+   # edit .env to set OPENAI_API_KEY / ANTHROPIC_API_KEY / MISTRAL_API_KEY
+   ```
 6. Start the server (bind to loopback):
    ```
    uvicorn server.main:app --host 127.0.0.1 --port 8000
