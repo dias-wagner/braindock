@@ -132,11 +132,11 @@ You aim to build an Android system that:
 
 | Phase | Milestone | Done | Deliverable |
 | --- | --- | --- | --- |
-| 1 | Linux MCP server prototype |  | FastAPI + mock OpenAI forwarding |
+| 1 | Linux MCP server prototype | ✅ | FastAPI + mock OpenAI forwarding |
 | 1.1 | FastAPI project skeleton | ✅ | Basic FastAPI server running locally |
 | 1.2 | Implement MCP endpoint | ✅ | `/mcp/infer` endpoint with mock response |
-| 1.3 | Integrate mock OpenAI call |  | Forward request to mock LLM, return response |
-| 1.4 | Unit tests for server logic |  | Tests for request/response, context handling |
+| 1.3 | Integrate mock OpenAI call | ✅ | Forward request to mock LLM, return response |
+| 1.4 | Unit tests for server logic | ✅ | Tests for request/response, context handling |
 | 2 | Android app (MCP client) |  | App UI + HTTP calls to local server |
 | 2.1 | Android app project setup |  | Flutter/Kotlin app skeleton with UI scaffold |
 | 2.2 | HTTP client integration |  | App can send POST to local server |
@@ -157,34 +157,6 @@ You aim to build an Android system that:
 | 5.2 | Monitoring and logging |  | Add request/response logging, error handling |
 | 5.3 | UI/UX polish |  | Improve app interface and usability |
 | 5.4 | Production deployment checklist |  | Final docs, security review, release build |
-
-| Phase | Milestone | Deliverable |
-| --- | --- | --- |
-| 1 | Linux MCP server prototype | FastAPI + mock OpenAI forwarding |
-| 1.1 | FastAPI project skeleton | Basic FastAPI server running locally |
-| 1.2 | Implement MCP endpoint | `/mcp/infer` endpoint with mock response |
-| 1.3 | Integrate mock OpenAI call | Forward request to mock LLM, return response |
-| 1.4 | Unit tests for server logic | Tests for request/response, context handling |
-| 2 | Android app (MCP client) | App UI + HTTP calls to local server |
-| 2.1 | Android app project setup | Flutter/Kotlin app skeleton with UI scaffold |
-| 2.2 | HTTP client integration | App can send POST to local server |
-| 2.3 | UI for chat interaction | Basic chat interface, display responses |
-| 2.4 | Integration test: app ⇄ server | End-to-end test of local communication |
-| 3 | Termux MCP server on Android | Same server running natively on Android |
-| 3.1 | Termux environment setup | Documented steps to run server on Android |
-| 3.2 | Deploy FastAPI on Termux | Server runs and responds on Android device |
-| 3.3 | Android app connects to Termux server | App communicates with local server on device |
-| 3.4 | Performance and resource test | Measure latency, CPU, memory on device |
-| 4 | Session storage & context control | Persistent state handling |
-| 4.1 | In-memory session store | Per-session context in Python dict |
-| 4.2 | Persistent context (JSON/SQLite) | Serialize/restore session state |
-| 4.3 | Session management tests | Verify continuity and isolation of sessions |
-| 4.4 | Context control UI in app | App can view/reset session context |
-| 5 | Production deployment | API key management, monitoring, UI polish |
-| 5.1 | Secure API key management | Store API key securely in Termux |
-| 5.2 | Monitoring and logging | Add request/response logging, error handling |
-| 5.3 | UI/UX polish | Improve app interface and usability |
-| 5.4 | Production deployment checklist | Final docs, security review, release build |
 
 ### ✅ Conclusion
 This is a highly feasible, lightweight, and modular architecture that:
