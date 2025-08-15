@@ -8,12 +8,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ChatProvider? chatProvider;
+  const MyApp({super.key, this.chatProvider});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ChatProvider(),
+    return ChangeNotifierProvider<ChatProvider>.value(
+      value: chatProvider ?? ChatProvider(),
       child: MaterialApp(
         title: 'BrainDock',
         theme: ThemeData(

@@ -5,6 +5,9 @@ import '../models/mcp_models.dart';
 class MCPService {
   static const String _baseUrl = 'http://127.0.0.1:8000';
   static const String _endpoint = '/mcp/infer';
+  final http.Client client;
+
+  MCPService({http.Client? client}) : client = client ?? http.Client();
 
   /// Send a message to the local MCP server
   Future<MCPResponse> sendMessage({
@@ -19,7 +22,7 @@ class MCPService {
         mcpState: MCPState(history: history),
       );
 
-      final response = await http.post(
+      final response = await client.post(
         Uri.parse('$_baseUrl$_endpoint'),
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +46,7 @@ class MCPService {
   /// Test connection to the MCP server
   Future<bool> testConnection() async {
     try {
-      final response = await http.get(
+      final response = await client.get(
         Uri.parse('$_baseUrl/healthz'),
         headers: {'Content-Type': 'application/json'},
       );

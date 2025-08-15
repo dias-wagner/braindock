@@ -4,7 +4,7 @@ import '../services/mcp_service.dart';
 
 
 class ChatProvider with ChangeNotifier {
-  final MCPService _mcpService = MCPService();
+  final MCPService _mcpService;
   
   List<MCPMessage> _messages = [];
   bool _isLoading = false;
@@ -15,6 +15,10 @@ class ChatProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String get error => _error;
   String get sessionId => _sessionId;
+
+  ChatProvider({MCPService? mcpService}) : _mcpService = mcpService ?? MCPService();
+
+  factory ChatProvider.withService(MCPService service) => ChatProvider(mcpService: service);
 
   /// Send a message to the MCP server
   Future<void> sendMessage(String message) async {
