@@ -2,11 +2,20 @@ import os
 from typing import List, Literal
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from .llm import MockLLMAdapter
 
 app = FastAPI(title="BrainDock MCP Server", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify your app's origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # ==== LLM Adapter Setup (Phase 1.3) ====
 def get_llm_adapter():

@@ -125,10 +125,35 @@ With the virtual environment activated:
 pytest -q
 ```
 
-### Android App (MCP Client)
-- Use Flutter or Kotlin to build a simple chat UI.
-- Point HTTP requests to `http://127.0.0.1:8000/mcp/infer` on device.
-- In Android emulator, use `http://10.0.2.2:8000/mcp/infer` to reach the host machine.
+### Android App (MCP Client) - Phase 2.1 ✅ Complete
+
+The Android app is built with Flutter and provides a modern chat interface for interacting with the MCP server.
+
+**Features:**
+- Modern chat UI with message bubbles
+- Session management and context preservation
+- Connection testing functionality
+- Error handling and user feedback
+- Cross-platform support (Android, iOS, Web)
+
+**Setup:**
+```bash
+cd app
+flutter pub get
+flutter packages pub run build_runner build
+flutter run
+```
+
+**Architecture:**
+- HTTP client communicates with local MCP server
+- Provider pattern for state management
+- JSON serialization for MCP protocol messages
+- Responsive UI with Material Design 3
+
+**Usage:**
+- Point HTTP requests to `http://127.0.0.1:8000/mcp/infer` on device
+- In Android emulator, use `http://10.0.2.2:8000/mcp/infer` to reach the host machine
+- Test connection using the WiFi icon in the app bar
 
 ### Termux on Android
 1. Install Termux from a trusted source.
@@ -192,7 +217,7 @@ Manual testing:
 | 1.3 | Integrate mock LLM call | Forward input and return response |
 | 1.4 | Unit tests for server logic | Request/response, context handling |
 | 2 | Android app (MCP client) | UI + HTTP calls to local server |
-| 2.1 | Android app setup | Flutter/Kotlin scaffold |
+| 2.1 | Android app setup | ✅ Flutter/Kotlin scaffold |
 | 2.2 | HTTP client integration | App can POST to server |
 | 2.3 | Chat UI | Display responses |
 | 2.4 | E2E integration | App ⇄ Server |
