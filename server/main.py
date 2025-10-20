@@ -62,20 +62,25 @@ class MCPInferRequest(BaseModel):
     mcp_state: MCPState
 
 
+
+class MCPOutput(BaseModel):
+    text: str
+
+
 class MCPInferResponse(BaseModel):
     session_id: str
-    mcp_output: str
+    mcp_output: MCPOutput
     mcp_state: MCPState
 
 
 @app.post("/mcp/infer", response_model=MCPInferResponse)
 async def mcp_infer(req: MCPInferRequest) -> MCPInferResponse:
     user_message = MCPMessage(role="user", content=req.mcp_input.text)
-    
+
     # Convert history to format expected by LLM adapter
     messages = [{"role": msg.role, "content": msg.content} for msg in req.mcp_state.history]
     messages.append({"role": "user", "content": req.mcp_input.text})
-    
+
     # Get response from LLM adapter (Phase 1.3)
     llm_adapter = getattr(app.state, 'llm_adapter', None)
     if llm_adapter and llm_adapter.is_available():
@@ -83,13 +88,14 @@ async def mcp_infer(req: MCPInferRequest) -> MCPInferResponse:
     else:
         # Fallback to simple echo if adapter unavailable
         assistant_reply_text = f"Echo: {req.mcp_input.text}"
-    
+
     assistant_message = MCPMessage(role="assistant", content=assistant_reply_text)
     updated_history: List[MCPMessage] = [*req.mcp_state.history, user_message, assistant_message]
-    
+
     return MCPInferResponse(
         session_id=req.session_id,
-        mcp_output=assistant_reply_text,
+        mcp_output=MCPOutput(text=assistant_reply_text),
         mcp_state=MCPState(history=updated_history),
     )
+
 
