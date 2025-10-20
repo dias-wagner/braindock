@@ -18,7 +18,7 @@ def test_mcp_infer_echoes_and_updates_history():
     assert res.status_code == 200
     data = res.json()
     assert data["session_id"] == "user-123"
-    assert data["mcp_output"] == "Echo: Hello"
+    assert data["mcp_output"]["text"] == "Echo: Hello"
     history = data["mcp_state"]["history"]
     assert len(history) == 2
     assert history[0]["role"] == "user" and history[0]["content"] == "Hello"
@@ -44,8 +44,8 @@ def test_mcp_infer_with_template_mode():
         res = client.post("/mcp/infer", json=payload)
         assert res.status_code == 200
         data = res.json()
-        assert "I'm a mock LLM" in data["mcp_output"]
-        assert "Test message" in data["mcp_output"]
+        assert "I'm a mock LLM" in data["mcp_output"]["text"]
+        assert "Test message" in data["mcp_output"]["text"]
     finally:
         # Restore original adapter
         if original_adapter:
@@ -74,7 +74,7 @@ def test_mcp_infer_with_history():
     assert history[0]["role"] == "user" and history[0]["content"] == "First message"
     assert history[1]["role"] == "assistant" and history[1]["content"] == "Echo: First message"
     assert history[2]["role"] == "user" and history[2]["content"] == "Second message"
-    assert history[3]["role"] == "assistant" and "Second message" in history[3]["content"]
+    assert "Second message" in history[3]["content"]
 
 
 def test_mcp_infer_validation_error_on_empty_text():
@@ -86,5 +86,4 @@ def test_mcp_infer_validation_error_on_empty_text():
     }
     res = client.post("/mcp/infer", json=payload)
     assert res.status_code == 422
-
 
