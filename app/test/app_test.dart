@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../lib/services/mcp_service.dart';
-import '../lib/models/mcp_models.dart';
-import 'package:provider/provider.dart';
-import '../lib/providers/chat_provider.dart';
-import '../lib/main.dart';
+import 'package:braindock_client/services/mcp_service.dart';
+import 'package:braindock_client/providers/chat_provider.dart';
+import 'package:braindock_client/main.dart';
 
 void main() {
   final mockClient = MockClient((request) async {
     final mockResponse = {
       'session_id': 'default-session',
-      'mcp_output': 'Mocked reply',
+      'mcp_output': {'text': 'Mocked reply'},
       'mcp_state': {
         'history': [
           {'role': 'user', 'content': 'Hello'},
@@ -56,9 +54,9 @@ void main() {
       await tester.testTextInput.receiveAction(TextInputAction.send);
       await tester.pumpAndSettle();
       // Assert user message appears
-      expect(find.text('Hello'), findsWidgets);
+      expect(find.widgetWithText(Container, 'Hello'), findsOneWidget);
       // Assert assistant reply appears
-      expect(find.text('Mocked reply'), findsWidgets);
+      expect(find.widgetWithText(Container, 'Mocked reply'), findsOneWidget);
     });
   });
 }
