@@ -54,6 +54,12 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clear the error message
+  void clearError() {
+    _error = '';
+    notifyListeners();
+  }
+
   /// Test connection to the MCP server
   Future<bool> testConnection() async {
     return await _mcpService.testConnection();

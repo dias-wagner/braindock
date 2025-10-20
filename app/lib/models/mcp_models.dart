@@ -44,6 +44,19 @@ class MCPInput {
 }
 
 @JsonSerializable()
+class MCPOutput {
+  @JsonKey(name: 'text')
+  final String text;
+
+  MCPOutput({required this.text});
+
+  factory MCPOutput.fromJson(Map<String, dynamic> json) =>
+      _$MCPOutputFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MCPOutputToJson(this);
+}
+
+@JsonSerializable()
 class MCPRequest {
   @JsonKey(name: 'session_id')
   final String sessionId;
@@ -69,7 +82,7 @@ class MCPResponse {
   @JsonKey(name: 'session_id')
   final String sessionId;
   @JsonKey(name: 'mcp_output')
-  final String mcpOutput;
+  final MCPOutput mcpOutput;
   @JsonKey(name: 'mcp_state')
   final MCPState mcpState;
 

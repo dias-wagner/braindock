@@ -35,6 +35,14 @@ Map<String, dynamic> _$MCPInputToJson(MCPInput instance) => <String, dynamic>{
       'text': instance.text,
     };
 
+MCPOutput _$MCPOutputFromJson(Map<String, dynamic> json) => MCPOutput(
+      text: json['text'] as String,
+    );
+
+Map<String, dynamic> _$MCPOutputToJson(MCPOutput instance) => <String, dynamic>{
+      'text': instance.text,
+    };
+
 MCPRequest _$MCPRequestFromJson(Map<String, dynamic> json) => MCPRequest(
       sessionId: json['session_id'] as String,
       mcpInput: MCPInput.fromJson(json['mcp_input'] as Map<String, dynamic>),
@@ -50,7 +58,7 @@ Map<String, dynamic> _$MCPRequestToJson(MCPRequest instance) =>
 
 MCPResponse _$MCPResponseFromJson(Map<String, dynamic> json) => MCPResponse(
       sessionId: json['session_id'] as String,
-      mcpOutput: json['mcp_output'] as String,
+      mcpOutput: MCPOutput.fromJson(json['mcp_output'] as Map<String, dynamic>),
       mcpState: MCPState.fromJson(json['mcp_state'] as Map<String, dynamic>),
     );
 

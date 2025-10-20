@@ -32,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     return Scaffold(
       appBar: AppBar(
         title: const Text('BrainDock Chat'),
@@ -47,12 +48,15 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: const Icon(Icons.wifi),
             onPressed: () async {
-              final isConnected = await context.read<ChatProvider>().testConnection();
+              final isConnected =
+                  await context.read<ChatProvider>().testConnection();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      isConnected ? 'Connected to MCP server' : 'Failed to connect to MCP server',
+                      isConnected
+                          ? 'Connected to MCP server'
+                          : 'Failed to connect to MCP server',
                     ),
                     backgroundColor: isConnected ? Colors.green : Colors.red,
                   ),
@@ -73,23 +77,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.error_outline,
                           size: 64,
                           color: Colors.red,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
                           'Error: ${chatProvider.error}',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.red),
+                          style: const TextStyle(color: Colors.red),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
-                            chatProvider.clearChat();
+                            chatProvider.clearError();
                           },
-                          child: Text('Clear Error'),
+                          child: const Text('Clear Error'),
                         ),
                       ],
                     ),
@@ -101,21 +105,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.chat_bubble_outline,
                           size: 64,
                           color: Colors.grey,
                         ),
-                        SizedBox(height: 16),
-                        Text(
+                        const SizedBox(height: 16),
+                        const Text(
                           'Start a conversation with BrainDock',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
+                        const SizedBox(height: 8),
+                        const Text(
                           'Make sure the MCP server is running on localhost:8000',
                           style: TextStyle(
                             fontSize: 14,
@@ -135,14 +139,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final message = chatProvider.messages[index];
                     final isUser = message.role == 'user';
-                    
+
                     return Padding(
-                      padding: EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.only(bottom: 16),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isUser) ...[
-                            CircleAvatar(
+                            const CircleAvatar(
                               backgroundColor: Colors.blue,
                               child: Text(
                                 'AI',
@@ -152,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                           ],
                           Expanded(
                             child: Column(
@@ -171,7 +175,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                   child: Text(
                                     message.content,
                                     style: TextStyle(
-                                      color: isUser ? Colors.white : Colors.black,
+                                      color:
+                                          isUser ? Colors.white : Colors.black,
                                     ),
                                   ),
                                 ),
@@ -179,8 +184,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                           if (isUser) ...[
-                            SizedBox(width: 12),
-                            CircleAvatar(
+                            const SizedBox(width: 12),
+                            const CircleAvatar(
                               backgroundColor: Colors.green,
                               child: Icon(
                                 Icons.person,
@@ -200,32 +205,32 @@ class _ChatScreenState extends State<ChatScreen> {
             builder: (context, chatProvider, child) {
               if (chatProvider.isLoading) {
                 return Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                      SizedBox(width: 16),
-                      Text('AI is thinking...'),
+                      const SizedBox(width: 16),
+                      const Text('AI is thinking...'),
                     ],
                   ),
                 );
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             },
           ),
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
                   blurRadius: 4,
-                  offset: Offset(0, -2),
+                  offset: const Offset(0, -2),
                 ),
               ],
             ),
@@ -234,7 +239,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type your message...',
                       border: OutlineInputBorder(),
                     ),
@@ -275,4 +280,5 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
+
 
